@@ -1,0 +1,168 @@
+### BEGIN INIT INFO
+# Provides:             iptables
+# Required-Start:       mountall
+# Should-Start:         $local_fs
+# Required-Stop:
+# Should-Stop:
+# X-Start-Before:       networking
+# X-Stop-After:         networking
+# Default-Start:        S
+# Default-Stop:         0 6
+# Short-description:    iptables
+# Description:          Firewall
+### END INIT INFO
+
+echo ---------------------------------
+echo REDEMARRAGE DU PARFEUX:
+echo ---------------------------------
+
+# Vider les tables actuelles
+iptables -t filter -F
+
+# Vider les regles personnelles
+iptables -t filter -X
+
+# Interdire toute connexion entrante et sortante
+iptables -t filter -P INPUT DROP
+iptables -t filter -P FORWARD DROP
+iptables -t filter -P OUTPUT DROP
+
+# ---
+
+# Ne pas casser les connexions etablies
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Autoriser loopback
+iptables -t filter -A INPUT -i lo -j ACCEPT
+iptables -t filter -A OUTPUT -o lo -j ACCEPT
+
+# Anti-flood
+iptables -A FORWARD -p tcp --syn -m limit --limit 1/second -j ACCEPT
+iptables -A FORWARD -p udp -m limit --limit 1/second -j ACCEPT
+iptables -A FORWARD -p icmp --icmp-type echo-request -m limit --limit 1/second -j ACCEPT
+
+# Anti-scan port
+iptables -A FORWARD -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s -j ACCEPT
+
+# ICMP (Ping)
+iptables -t filter -A INPUT -p icmp -j ACCEPT
+iptables -t filter -A OUTPUT -p icmp -j ACCEPT
+
+# ---
+
+# DNS In/Out
+iptables -t filter -A OUTPUT -p tcp --dport 53 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 53 -j ACCEPT
+iptables -t filter -A INPUT -p udp --dport 53 -j ACCEPT
+
+# NTP Out
+iptables -t filter -A OUTPUT -p udp --dport 123 -j ACCEPT
+
+# FTP In/Out
+iptables -t filter -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 21 -j ACCEPT
+
+#SMTP In/Out
+iptables -t filter -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 25 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 465 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 465 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 2525 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 2525 -j ACCEPT
+
+#IMAP In/Out
+iptables -t filter -A INPUT -p tcp --dport 143 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 143 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 993 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 993 -j ACCEPT
+
+#POP3 In/Out
+iptables -t filter -A INPUT -p tcp --dport 110 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 110 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 995 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 995 -j ACCEPT
+
+# HTTP + HTTPS Out + APT
+iptables -t filter -A OUTPUT -p tcp --dport 80 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 443 -j ACCEPT
+
+# HTTP + HTTPS In + APT
+iptables -t filter -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -t filter -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# MySQL
+iptables -A INPUT -i eth0 -p tcp -m tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -p tcp -s 0/0 --sport 1024:65535 -d 202.54.1.20 --dport 3306 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 202.54.1.20 --sport 3306 -d 0/0 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+# Teamspeak
+iptables -t filter -A INPUT -p udp --dport 9987 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 9987 -j ACCEPT
+
+iptables -t filter -A INPUT -p udp --dport 9988 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 9988 -j ACCEPT
+
+iptables -t filter -A INPUT -p tcp --dport 10011 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 10011 -j ACCEPT
+
+iptables -t filter -A INPUT -p tcp --dport 10012 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 10012 -j ACCEPT
+
+iptables -t filter -A INPUT -p tcp --dport 30033 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 30033 -j ACCEPT
+
+iptables -t filter -A INPUT -p tcp --dport 30034 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 30034 -j ACCEPT
+
+iptables -t filter -A INPUT -p tcp --dport 2008 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 2008 -j ACCEPT
+
+iptables -t filter -A INPUT -p udp --dport 2010 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 2010 -j ACCEPT
+
+# GTA V SERVER
+iptables -t filter -A INPUT -p udp --dport 30120 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 30120 -j ACCEPT
+
+iptables -t filter -A INPUT -p udp --dport 30120 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 30120 -j ACCEPT
+
+iptables -t filter -A INPUT -p udp --dport 30110 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 30110 -j ACCEPT
+
+iptables -t filter -A INPUT -p udp --dport 30110 -j ACCEPT
+iptables -t filter -A OUTPUT -p udp --dport 30110 -j ACCEPT
+
+# SSH
+iptables -t filter -A INPUT -p tcp --dport 8085 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 8085 -j ACCEPT
+
+# IP Autorisers
+iptables -A INPUT -s 85.190.70.49 -j ACCEPT #Shadow Weedy
+iptables -A OUTPUT -d 85.190.70.49 -j ACCEPT #Shadow Weedy
+
+# IP bannies
+# iptables -A INPUT -s 77.154.204.235 -j DROP
+iptables -A INPUT -s 91.200.12.136 -j DROP #SPAM FORUM
+iptables -A INPUT -s 109.223.245.156 -j DROP #AZERTEAH
+iptables -A INPUT -s 95.87.232.198 -j DROP #HACK FOFO
+iptables -A INPUT -s 37.157.189.1 -j DROP #HACK FOFO
+iptables -A INPUT -s 212.162.46.122 -j DROP #HACK FOFO
+iptables -A INPUT -s 37.157.189.10 -j DROP #HACK FOFO
+iptables -A INPUT -s 4.69.143.129 -j DROP #HACK FOFO
+iptables -A INPUT -s 195.81.49.54 -j DROP #HACK FOFO
+iptables -A INPUT -s 92.144.13.54 -j DROP
+iptables -A INPUT -s 86.220.131.242 -j DROP # Audema13
+iptables -A INPUT -s 86.208.175.8 -j DROP #BAN TS FOR VOCAL FLOOD
+iptables -A INPUT -s 109.219.172.130 -j DROP #BAN TS FOR VOCAL FLOOD
+iptables -A INPUT -s 91.69.208.167 -j DROP #BAN TS FOR VOCAL FLOOD
+iptables -A INPUT -s 176.156.52.65 -j DROP #BAN TS FOR VOCAL FLOOD
+
+#INCLUDE BLACKLIST SORT BY COUNTRY
+iptables-restore < /srv/ip_whitelist.txt
+
+echo ---------------------------------
+echo LE PARFEU A BIEN REDEMMARE
+echo ---------------------------------

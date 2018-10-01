@@ -1,0 +1,54 @@
+#!/bin/sh
+# Erstellt von Webmaster www.ist-immer-online.de
+# http://www.ist-immer-online.de/2010/09/teamspeak-3-autostart-unter-linux/
+# chkconfig: 2345 99 01
+# description: Teamspeak 3 Server
+### BEGIN INIT INFO
+# Provides: teamspeak3
+# Required-Start: $all
+# Required-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: Teamspeak 3 Server
+### END INIT INFO
+
+
+#
+# CONFIGURATION
+# user    Utilisateur unix utiliser pour executer les applications.
+# params  Paramètres pour l'application serveur Teamspeak.
+# dir     Chemin répertoire serveur Teamspeak.
+# dir_bot Chemin répertoire robot.
+###
+USER="ts3user"
+PARAMS="inifile=ts3server.ini"
+DIR="/home/ts3user/server/"
+DIR_BOT="/home/ts3user/server/bot/"
+
+#
+# SCRIPT
+###
+case "$1" in
+start)
+su $USER -c "${DIR}/ts3server_startscript.sh start ${PARAMS}"
+su $USER -c "${DIR_BOT}/jts3servermod_startscript.sh start"
+sleep 1
+;;
+stop)
+su $USER -c "${DIR}/ts3server_startscript.sh stop"
+su $USER -c "${DIR_BOT}/jts3servermod_startscript.sh stop"
+;;
+restart)
+su $USER -c "${DIR}/ts3server_startscript.sh restart ${PARAMS}"
+su $USER -c "${DIR_BOT}/jts3servermod_startscript.sh restart"
+;;
+status)
+su $USER -c "${DIR}/ts3server_startscript.sh status"
+su $USER -c "${DIR_BOT}/jts3servermod_startscript.sh status"
+;;
+*)
+echo "Commande: `basename $0` {start|stop|restart|status}" >&2
+exit 1
+;;
+esac
+exit 0
