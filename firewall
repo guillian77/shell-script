@@ -101,20 +101,11 @@ iptables -A OUTPUT -p tcp -s 202.54.1.20 --sport 3306 -d 0/0 --dport 1024:65535 
 iptables -t filter -A INPUT -p udp --dport 9987 -j ACCEPT
 iptables -t filter -A OUTPUT -p udp --dport 9987 -j ACCEPT
 
-iptables -t filter -A INPUT -p udp --dport 9988 -j ACCEPT
-iptables -t filter -A OUTPUT -p udp --dport 9988 -j ACCEPT
-
 iptables -t filter -A INPUT -p tcp --dport 10011 -j ACCEPT
 iptables -t filter -A OUTPUT -p tcp --dport 10011 -j ACCEPT
 
-iptables -t filter -A INPUT -p tcp --dport 10012 -j ACCEPT
-iptables -t filter -A OUTPUT -p tcp --dport 10012 -j ACCEPT
-
 iptables -t filter -A INPUT -p tcp --dport 30033 -j ACCEPT
 iptables -t filter -A OUTPUT -p tcp --dport 30033 -j ACCEPT
-
-iptables -t filter -A INPUT -p tcp --dport 30034 -j ACCEPT
-iptables -t filter -A OUTPUT -p tcp --dport 30034 -j ACCEPT
 
 iptables -t filter -A INPUT -p tcp --dport 2008 -j ACCEPT
 iptables -t filter -A OUTPUT -p tcp --dport 2008 -j ACCEPT
@@ -122,45 +113,14 @@ iptables -t filter -A OUTPUT -p tcp --dport 2008 -j ACCEPT
 iptables -t filter -A INPUT -p udp --dport 2010 -j ACCEPT
 iptables -t filter -A OUTPUT -p udp --dport 2010 -j ACCEPT
 
-# GTA V SERVER
-iptables -t filter -A INPUT -p udp --dport 30120 -j ACCEPT
-iptables -t filter -A OUTPUT -p udp --dport 30120 -j ACCEPT
-
-iptables -t filter -A INPUT -p udp --dport 30120 -j ACCEPT
-iptables -t filter -A OUTPUT -p udp --dport 30120 -j ACCEPT
-
-iptables -t filter -A INPUT -p udp --dport 30110 -j ACCEPT
-iptables -t filter -A OUTPUT -p udp --dport 30110 -j ACCEPT
-
-iptables -t filter -A INPUT -p udp --dport 30110 -j ACCEPT
-iptables -t filter -A OUTPUT -p udp --dport 30110 -j ACCEPT
-
 # SSH
-iptables -t filter -A INPUT -p tcp --dport 8085 -j ACCEPT
-iptables -t filter -A OUTPUT -p tcp --dport 8085 -j ACCEPT
-
-# IP Autorisers
-iptables -A INPUT -s 85.190.70.49 -j ACCEPT #Shadow Weedy
-iptables -A OUTPUT -d 85.190.70.49 -j ACCEPT #Shadow Weedy
+iptables -t filter -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -t filter -A OUTPUT -p tcp --dport 22 -j ACCEPT
 
 # IP bannies
 # iptables -A INPUT -s 77.154.204.235 -j DROP
-iptables -A INPUT -s 91.200.12.136 -j DROP #SPAM FORUM
-iptables -A INPUT -s 109.223.245.156 -j DROP #AZERTEAH
-iptables -A INPUT -s 95.87.232.198 -j DROP #HACK FOFO
-iptables -A INPUT -s 37.157.189.1 -j DROP #HACK FOFO
-iptables -A INPUT -s 212.162.46.122 -j DROP #HACK FOFO
-iptables -A INPUT -s 37.157.189.10 -j DROP #HACK FOFO
-iptables -A INPUT -s 4.69.143.129 -j DROP #HACK FOFO
-iptables -A INPUT -s 195.81.49.54 -j DROP #HACK FOFO
-iptables -A INPUT -s 92.144.13.54 -j DROP
-iptables -A INPUT -s 86.220.131.242 -j DROP # Audema13
-iptables -A INPUT -s 86.208.175.8 -j DROP #BAN TS FOR VOCAL FLOOD
-iptables -A INPUT -s 109.219.172.130 -j DROP #BAN TS FOR VOCAL FLOOD
-iptables -A INPUT -s 91.69.208.167 -j DROP #BAN TS FOR VOCAL FLOOD
-iptables -A INPUT -s 176.156.52.65 -j DROP #BAN TS FOR VOCAL FLOOD
 
-#INCLUDE BLACKLIST SORT BY COUNTRY
+#INCLUDE WHITELIST SORT BY COUNTRY
 iptables-restore < /srv/ip_whitelist.txt
 
 echo ---------------------------------
